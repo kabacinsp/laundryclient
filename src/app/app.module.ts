@@ -3,26 +3,26 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { UserFormComponent } from './component/user-form/user-form.component';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { UserService } from './service/user.service';
-import { HomeComponent } from './component/home/home.component';
-import { LoginComponent } from './login/login.component';
+import { HomeComponent } from './component/pages/home/home.component';
+import { LoginComponent } from './component/pages/login/login.component';
 import { httpInterceptorProviders } from './utils/https.interceptor';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NavbarComponent } from './component/items/navbar/navbar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    UserFormComponent,
     HomeComponent,
-    LoginComponent
+    LoginComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule, 
     HttpClientModule, 
-    FormsModule
+    FormsModule, NgbModule
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]
