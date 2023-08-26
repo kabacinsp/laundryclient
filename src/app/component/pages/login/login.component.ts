@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { StorageService } from '../service/storage.service';
-import { AuthService } from '../service/auth.service';
+import { StorageService } from '../../../service/storage.service';
+import { AuthService } from '../../../service/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -28,12 +28,12 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(username, password).subscribe({
       next: data => {
-        // this.storageService.saveUser(data);
+        this.storageService.saveUser(data);
 
-        // this.isLoginFailed = false;
-        // this.isLoggedIn = true;
-        // this.roles = this.storageService.getUser().roles;
-        // this.reloadPage();
+        this.isLoginFailed = false;
+        this.isLoggedIn = true;
+        this.roles = this.storageService.getUser().roles;
+        this.reloadPage();
       },
       error: err => {
         this.errorMessage = err.error.message;
