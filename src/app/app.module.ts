@@ -10,13 +10,17 @@ import { LoginComponent } from './component/pages/login/login.component';
 import { httpInterceptorProviders } from './utils/https.interceptor';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NavbarComponent } from './component/items/navbar/navbar.component';
+import { BoardComponent } from './component/pages/board/board.component';
+import { TabsComponent } from './component/items/tabs/tabs.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     LoginComponent,
-    NavbarComponent
+    NavbarComponent,
+    BoardComponent,
+    TabsComponent
   ],
   imports: [
     BrowserModule,
