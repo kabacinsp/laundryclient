@@ -22,8 +22,8 @@ export class AuthService {
     return this.httpClient.post(
       AUTH_API + 'signin',
       {
-        "username": "test@user.com",
-        "password": "Bozenka12*"
+        "username": username,
+        "password": password
       },
       httpOptions
     );

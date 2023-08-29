@@ -1,12 +1,12 @@
 <div class="row d-flex justify-content-center align-items-center h-100">
   <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-    <div class="card shadow-5-strong login-card" style="border-radius: 1rem;">
+    <div class="card shadow-lg login-card" style="border-radius: 1rem;">
       <div class="card-body py-5 px-md-5 text-center">
         <h3 class="mb-5">Logowanie</h3>
         <form *ngIf="!isLoggedIn" name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
           <div class="form-outline mb-4">
             <label class="form-label" for="email">E-mail</label>
-            <input type="text" class="form-control form-control-lg" name="email" [(ngModel)]="form.email" required
+            <input type="text" class="form-control form-control-lg" name="email" [(ngModel)]="form.username" required
               #email="ngModel" [ngClass]="{ 'is-invalid': f.submitted && email.errors }" />
             <div *ngIf="email.errors && f.submitted" class="invalid-feedback">
               Adres e-mail jest wymagany!
