@@ -1,40 +1,46 @@
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-10 ml-auto col-xl-6 mr-auto">
-            <div class="card">
-                <div class="card-header">
-                    <ul class="nav nav-tabs justify-content-center" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#reservations" role="tab">
-                                <i class="bi bi-calendar2-week-fill"></i> Rezerwacje
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#history" role="tab">
-                                <i class="bi bi-card-list"></i> Historia
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#settings" role="tab">
-                                <i class="bi bi-gear-wide-connected"></i> Ustawienia
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="card-body">
-                    <div class="tab-content text-center">
-                        <div class="tab-pane active" id="reservations" role="tabpanel">
-                            <p>Reservations tab</p>
-                        </div>
-                        <div class="tab-pane" id="history" role="tabpanel">
-                            <p> History tab </p>
-                        </div>
-                        <div class="tab-pane" id="settings" role="tabpanel">
-                            <p>Settings tab</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="tabs">
+    <input type="radio" id="tab1" name="tab-control" checked>
+    <input type="radio" id="tab2" name="tab-control">
+    <input type="radio" id="tab3" name="tab-control">
+    <ul>
+        <li title="Reservations">
+            <label for="tab1" role="button" ><!-- href="#reservations" -->
+                <i class="bi bi-calendar2-week-fill"></i> Rezerwacje
+            </label>
+        </li>
+        <li title="History">
+            <label for="tab2" role="button" ><!-- href="#history" -->
+                <i class="bi bi-card-list"></i> Historia
+            </label>
+        </li>
+        <li title="Settings">
+            <label for="tab3" role="button" ><!-- href="#settings" -->
+                <i class="bi bi-gear-wide-connected"></i> Ustawienia
+            </label>
+        </li>
+    </ul>
+
+    <div class="slider">
+        <div class="indicator"></div>
+    </div>
+    <div class="content">
+        <section>
+            <!--https://codepen.io/ankithingarajiya/pen/jQBWEz-->
+            <!--https://mdbootstrap.com/docs/standard/plugins/calendar/-->
+
+            <h2>Features</h2>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea dolorem sequi, quo tempore in
+            eum obcaecati atque quibusdam officiis est dolorum minima deleniti ratione molestias numquam. Voluptas
+            voluptates quibusdam cum?
+        </section>
+        <section>
+            <h2>Delivery Contents</h2>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem quas adipisci a accusantium eius ut
+            voluptatibus ad impedit nulla, ipsa qui. Quasi temporibus eos commodi aliquid impedit amet, similique nulla.
+        </section>
+        <section>
+            <h2>Shipping</h2>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quam nemo ducimus eius, magnam error quisquam sunt
+            voluptate labore, excepturi numquam! Alias libero optio sed harum debitis! Veniam, quia in eum.
+        </section>
     </div>
 </div>
