@@ -3,8 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
-import { SchedulerModule } from 'angular-calendar-scheduler';
-
+import { FlatpickrModule } from 'angularx-flatpickr';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -12,11 +11,12 @@ import { FormsModule } from '@angular/forms';
 import { HomeComponent } from './component/pages/home/home.component';
 import { LoginComponent } from './component/pages/login/login.component';
 import { httpInterceptorProviders } from './utils/https.interceptor';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModalModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NavbarComponent } from './component/items/navbar/navbar.component';
 import { BoardComponent } from './component/pages/board/board.component';
 import { TabsComponent } from './component/items/tabs/tabs.component';
 import { CalendarComponent } from './component/items/calendar/calendar.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -32,13 +32,17 @@ import { CalendarComponent } from './component/items/calendar/calendar.component
     BrowserModule,
     AppRoutingModule, 
     HttpClientModule, 
-    FormsModule, NgbModule,
+    CommonModule,
+    FormsModule,
+    NgbModalModule,
+    NgbModule,
+    FlatpickrModule.forRoot(),
     CalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory,
     }),
-    SchedulerModule.forRoot({ locale: 'en', headerDateFormat: 'daysRange' }),
   ],
+  exports: [CalendarComponent],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]
 })

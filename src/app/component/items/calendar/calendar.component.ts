@@ -1,170 +1,215 @@
-import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
-import { Subject } from 'rxjs';
-
 import {
+    Component,
+    ChangeDetectionStrategy,
+    ViewChild,
+    TemplateRef,
+    Input,
+  } from '@angular/core';
+  import {
+    startOfDay,
     endOfDay,
-    addMonths,
-    subHours,
-} from 'date-fns';
-import {
-    SchedulerViewDay,
-    SchedulerViewHour,
-    SchedulerViewHourSegment,
-    CalendarSchedulerEvent,
-    CalendarSchedulerEventAction,
-    startOfPeriod,
-    endOfPeriod,
-    addPeriod,
-    subPeriod,
-    SchedulerDateFormatter,
-    SchedulerEventTimesChangedEvent
-} from 'angular-calendar-scheduler';
-import {
+    subDays,
+    addDays,
+    endOfMonth,
+    isSameDay,
+    isSameMonth,
+    addHours,
+  } from 'date-fns';
+  import { Subject } from 'rxjs';
+  import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+  import {
+    CalendarEvent,
+    CalendarEventAction,
+    CalendarEventTimesChangedEvent,
     CalendarView,
-    CalendarDateFormatter,
-    DateAdapter
-} from 'angular-calendar';
-import { CalendarService } from 'src/app/service/calendar.service';
+  } from 'angular-calendar';
+  import { EventColor } from 'calendar-utils';
+import { createNewCalendarEvent } from 'src/app/shared/calendar.utils';
+
+  const colors: Record<string, EventColor> = {
+    red: {
+      primary: '#ad2121',
+      secondary: '#FAE3E3',
+    },
+    blue: {
+      primary: '#1e90ff',
+      secondary: '#D1E8FF',
+    },
+    yellow: {
+      primary: '#e3bc08',
+      secondary: '#FDF1BA',
+    },
+  };
 
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
-  styleUrls: ['./calendar.component.scss'],
-  providers: [{
-    provide: CalendarDateFormatter,
-    useClass: SchedulerDateFormatter
-}]
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [
+    `
+      h3 {
+        margin: 0 0 10px;
+      }
+
+      pre {
+        background-color: #f5f5f5;
+        padding: 15px;
+      }
+    `,
+  ],
+  styleUrls: ['./calendar.component.scss']
 })
-export class CalendarComponent implements OnInit {
-  title = 'Angular Calendar Scheduler Demo';
+export class CalendarComponent {
+    @ViewChild('modalContent', { static: true })
+    modalContent!: TemplateRef<any>;
 
-  CalendarView = CalendarView;
+    @Input() eventLength = 2;
 
-  view: CalendarView = CalendarView.Week;
-  viewDate: Date = new Date();
-  refresh: Subject<any> = new Subject();
-  locale: string = 'en';
-  weekStartsOn: number = 1;
-  startsWithToday: boolean = true;
-  activeDayIsOpen: boolean = true;
-  excludeDays: number[] = []; // [0];
-  dayStartHour: number = 6;
-  dayEndHour: number = 22;
-
-  minDate: Date = new Date();
-  maxDate: Date = endOfDay(addMonths(new Date(), 1));
-  dayModifier: Function;
-  hourModifier: Function;
-  segmentModifier: Function;
-  eventModifier: Function;
-  prevBtnDisabled: boolean = false;
-  nextBtnDisabled: boolean = false;
-
-  actions: CalendarSchedulerEventAction[] = [
+    view: CalendarView = CalendarView.Week;
+  
+    CalendarView = CalendarView;
+  
+    viewDate: Date = new Date();
+  
+    modalData!: {
+        action: string;
+        event: CalendarEvent;
+    };
+  
+    actions: CalendarEventAction[] = [
       {
-          when: 'enabled',
-          label: '<span class="valign-center"><i class="material-icons md-18 md-red-500">cancel</i></span>',
-          title: 'Delete',
-          onClick: (event: CalendarSchedulerEvent): void => {
-              console.log('Pressed action \'Delete\' on event ' + event.id);
-          }
+        label: '<i class="fas fa-fw fa-pencil-alt"></i>',
+        a11yLabel: 'Edit',
+        onClick: ({ event }: { event: CalendarEvent }): void => {
+          this.handleEvent('Edited', event);
+        },
       },
       {
-          when: 'cancelled',
-          label: '<span class="valign-center"><i class="material-icons md-18 md-red-500">autorenew</i></span>',
-          title: 'Restore',
-          onClick: (event: CalendarSchedulerEvent): void => {
-              console.log('Pressed action \'Restore\' on event ' + event.id);
-          }
+        label: '<i class="fas fa-fw fa-trash-alt"></i>',
+        a11yLabel: 'Delete',
+        onClick: ({ event }: { event: CalendarEvent }): void => {
+          this.events = this.events.filter((iEvent) => iEvent !== event);
+          this.handleEvent('Deleted', event);
+        },
+      },
+    ];
+  
+    refresh = new Subject<void>();
+  
+    events: CalendarEvent[] = [
+      {
+        start: subDays(startOfDay(new Date()), 1),
+        end: addDays(new Date(), 1),
+        title: 'A 3 day event',
+        color: { ...colors['red'] },
+        actions: this.actions,
+        allDay: true,
+        resizable: {
+          beforeStart: true,
+          afterEnd: true,
+        },
+        draggable: true,
+      },
+      {
+        start: startOfDay(new Date()),
+        title: 'An event with no end date',
+        color: { ...colors['yellow'] },
+        actions: this.actions,
+      },
+      {
+        start: subDays(endOfMonth(new Date()), 3),
+        end: addDays(endOfMonth(new Date()), 3),
+        title: 'A long event that spans 2 months',
+        color: { ...colors['blue'] },
+        allDay: true,
+      },
+      {
+        start: addHours(startOfDay(new Date()), 2),
+        end: addHours(new Date(), 2),
+        title: 'A draggable and resizable event',
+        color: { ...colors['yellow'] },
+        actions: this.actions,
+        resizable: {
+          beforeStart: true,
+          afterEnd: true,
+        },
+        draggable: true,
+      },
+    ];
+  
+    activeDayIsOpen: boolean = true;
+  
+    constructor(private modal: NgbModal) {}
+  
+    dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+      if (isSameMonth(date, this.viewDate)) {
+        if (
+          (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ||
+          events.length === 0
+        ) {
+          this.activeDayIsOpen = false;
+        } else {
+          this.activeDayIsOpen = true;
+        }
+        this.viewDate = date;
       }
-  ];
+    }
+  
+    eventTimesChanged({
+      event,
+      newStart,
+      newEnd,
+    }: CalendarEventTimesChangedEvent): void {
+      this.events = this.events.map((iEvent) => {
+        if (iEvent === event) {
+          return {
+            ...event,
+            start: newStart,
+            end: newEnd,
+          };
+        }
+        return iEvent;
+      });
+      this.handleEvent('Dropped or resized', event);
+    }
 
-  events: CalendarSchedulerEvent[] = [];
-
-  constructor(@Inject(LOCALE_ID) locale: string, private appService: CalendarService, private dateAdapter: DateAdapter) {
-      this.locale = locale;
-
-      this.dayModifier = ((day: SchedulerViewDay): void => {
-          day.cssClass = this.isDateValid(day.date) ? '' : 'cal-disabled';
-      }).bind(this);
-
-      this.hourModifier = ((hour: SchedulerViewHour): void => {
-          hour.cssClass = this.isDateValid(hour.date) ? '' : 'cal-disabled';
-      }).bind(this);
-
-      this.segmentModifier = ((segment: SchedulerViewHourSegment): void => {
-          segment.isDisabled = !this.isDateValid(segment.date);
-      }).bind(this);
-
-      this.eventModifier = ((event: CalendarSchedulerEvent): void => {
-          event.isDisabled = !this.isDateValid(event.start);
-      }).bind(this);
-
-      this.dateOrViewChanged();
-  }
-
-  ngOnInit(): void {
-      this.appService.getEvents(this.actions)
-          .then((events: CalendarSchedulerEvent[]) => this.events = events);
-  }
-
-  changeDate(date: Date): void {
-      console.log('changeDate', date);
-      this.viewDate = date;
-      this.dateOrViewChanged();
-  }
-
-  changeView(view: CalendarView): void {
-      console.log('changeView', view);
+    hourSegmentClicked(event: { date: Date }): void {
+      const start: Date = event.date;
+      const end: Date = addHours(event.date, this.eventLength);
+      const newEvent: CalendarEvent = createNewCalendarEvent(start, end, true);
+  
+      this.events.push(newEvent);
+      this.refresh.next();
+    }
+  
+    handleEvent(action: string, event: CalendarEvent): void {
+      this.modalData = { event, action };
+      console.log("Open modal");
+      this.modal.open(this.modalContent, { size: 'lg' });
+    }
+  
+    addEvent(): void {
+      this.events = [
+        ...this.events,
+        {
+          title: 'New event',
+          start: startOfDay(new Date()),
+          end: endOfDay(new Date()),
+          color: colors['red'],
+          draggable: false
+        },
+      ];
+    }
+  
+    deleteEvent(eventToDelete: CalendarEvent) {
+      this.events = this.events.filter((event) => event !== eventToDelete);
+    }
+  
+    setView(view: CalendarView) {
       this.view = view;
-      this.dateOrViewChanged();
-  }
-
-  dateOrViewChanged(): void {
-      if (this.startsWithToday) {
-          this.prevBtnDisabled = !this.isDateValid(subPeriod(this.dateAdapter, this.view, this.viewDate, 1));
-          this.nextBtnDisabled = !this.isDateValid(addPeriod(this.dateAdapter, this.view, this.viewDate, 1));
-      } else {
-          this.prevBtnDisabled = !this.isDateValid(endOfPeriod(this.dateAdapter, this.view, subPeriod(this.dateAdapter, this.view, this.viewDate, 1)));
-          this.nextBtnDisabled = !this.isDateValid(startOfPeriod(this.dateAdapter, this.view, addPeriod(this.dateAdapter, this.view, this.viewDate, 1)));
-      }
-
-      if (this.viewDate < this.minDate) {
-          this.changeDate(this.minDate);
-      } else if (this.viewDate > this.maxDate) {
-          this.changeDate(this.maxDate);
-      }
-  }
-
-  private isDateValid(date: Date): boolean {
-      return /*isToday(date) ||*/ date >= this.minDate && date <= this.maxDate;
-  }
-
-  dayHeaderClicked(day: SchedulerViewDay): void {
-      console.log('dayHeaderClicked Day', day);
-  }
-
-  hourClicked(hour: SchedulerViewHour): void {
-      console.log('hourClicked Hour', hour);
-  }
-
-  segmentClicked(action: string, segment: SchedulerViewHourSegment): void {
-      console.log('segmentClicked Action', action);
-      console.log('segmentClicked Segment', segment);
-  }
-
-  eventClicked(action: string, event: CalendarSchedulerEvent): void {
-      console.log('eventClicked Action', action);
-      console.log('eventClicked Event', event);
-  }
-
-  eventTimesChanged({ event, newStart, newEnd, type }: SchedulerEventTimesChangedEvent): void {
-      console.log('eventTimesChanged Type', type);
-      console.log('eventTimesChanged Event', event);
-      console.log('eventTimesChanged New Times', newStart, newEnd);
-      const ev: CalendarSchedulerEvent = this.events.find(e => e.id === event.id)!;
-      ev.start = newStart;
-      ev.end = newEnd;
-      this.refresh.next(true);
-  }
+    }
+  
+    closeOpenMonthViewDay() {
+      this.activeDayIsOpen = false;
+    }
 }
