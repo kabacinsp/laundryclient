@@ -176,7 +176,11 @@ export class CalendarComponent {
     hourSegmentClicked(event: { date: Date }): void {
       const start: Date = event.date;
       const end: Date = addHours(event.date, this.eventLength);
+
       const newEvent: CalendarEvent = createNewCalendarEvent(start, end, true);
+
+     this.handleEvent("Rezerwacja", newEvent);
+      this.modal.open(this.modalContent, { size: 'lg' });
   
       this.events.push(newEvent);
       this.refresh.next();
@@ -184,7 +188,6 @@ export class CalendarComponent {
   
     handleEvent(action: string, event: CalendarEvent): void {
       this.modalData = { event, action };
-      console.log("Open modal");
       this.modal.open(this.modalContent, { size: 'lg' });
     }
   

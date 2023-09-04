@@ -17,6 +17,7 @@ import { BoardComponent } from './component/pages/board/board.component';
 import { TabsComponent } from './component/items/tabs/tabs.component';
 import { CalendarComponent } from './component/items/calendar/calendar.component';
 import { CommonModule } from '@angular/common';
+import { TimepickerComponent } from './shared/timepicker/timepicker.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,7 @@ import { CommonModule } from '@angular/common';
     NavbarComponent,
     BoardComponent,
     TabsComponent,
-    CalendarComponent
+    CalendarComponent,
   ],
   imports: [
     BrowserModule,
@@ -41,6 +42,7 @@ import { CommonModule } from '@angular/common';
       provide: DateAdapter,
       useFactory: adapterFactory,
     }),
+    TimepickerComponent,
   ],
   exports: [CalendarComponent],
   providers: [httpInterceptorProviders],

@@ -1,29 +1,15 @@
 <div class="row text-center">
   <div class="col-md-4">
     <div class="btn-group">
-      <div
-        class="btn btn-primary"
-        mwlCalendarPreviousView
-        [view]="view"
-        [(viewDate)]="viewDate"
-        (viewDateChange)="closeOpenMonthViewDay()"
-      >
+      <div class="btn btn-primary" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate"
+        (viewDateChange)="closeOpenMonthViewDay()">
         Previous
       </div>
-      <div
-        class="btn btn-outline-secondary"
-        mwlCalendarToday
-        [(viewDate)]="viewDate"
-      >
+      <div class="btn btn-outline-secondary" mwlCalendarToday [(viewDate)]="viewDate">
         Today
       </div>
-      <div
-        class="btn btn-primary"
-        mwlCalendarNextView
-        [view]="view"
-        [(viewDate)]="viewDate"
-        (viewDateChange)="closeOpenMonthViewDay()"
-      >
+      <div class="btn btn-primary" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate"
+        (viewDateChange)="closeOpenMonthViewDay()">
         Next
       </div>
     </div>
@@ -34,24 +20,12 @@
 </div>
 <br />
 <div [ngSwitch]="view">
-  <mwl-calendar-week-view
-    *ngSwitchCase="CalendarView.Week"
-    [viewDate]="viewDate"
-    [events]="events"
-    [refresh]="refresh"
-    (eventClicked)="handleEvent('Clicked', $event.event)"
-    (hourSegmentClicked)="hourSegmentClicked($event)"
-    (eventTimesChanged)="eventTimesChanged($event)"
-  >
+  <mwl-calendar-week-view *ngSwitchCase="CalendarView.Week" [viewDate]="viewDate" [events]="events" [refresh]="refresh"
+    (eventClicked)="handleEvent('Clicked', $event.event)" (hourSegmentClicked)="hourSegmentClicked($event)"
+    (eventTimesChanged)="eventTimesChanged($event)">
   </mwl-calendar-week-view>
-  <mwl-calendar-day-view
-    *ngSwitchCase="CalendarView.Day"
-    [viewDate]="viewDate"
-    [events]="events"
-    [refresh]="refresh"
-    (eventClicked)="handleEvent('Clicked', $event.event)"
-    (eventTimesChanged)="eventTimesChanged($event)"
-  >
+  <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [viewDate]="viewDate" [events]="events" [refresh]="refresh"
+    (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
   </mwl-calendar-day-view>
 </div>
 
@@ -83,65 +57,25 @@
     <tbody>
       <tr *ngFor="let event of events">
         <td>
-          <input
-            type="text"
-            class="form-control"
-            [(ngModel)]="event.title"
-            (keyup)="refresh.next()"
-          />
+          <input type="text" class="form-control" [(ngModel)]="event.title" (keyup)="refresh.next()" />
         </td>
         <td>
-          <input
-            type="color"
-            *ngIf="event.color"
-            [(ngModel)]="event.color.primary"
-            (change)="refresh.next()"
-          />
+          <input type="color" *ngIf="event.color" [(ngModel)]="event.color.primary" (change)="refresh.next()" />
         </td>
         <td>
-          <input
-            type="color"
-            *ngIf="event.color"
-            [(ngModel)]="event.color.secondary"
-            (change)="refresh.next()"
-          />
-          <input
-            type="color"
-            *ngIf="event.color"
-            [ngModel]="event.color.secondaryText ?? '#1e90ff'"
-            (ngModelChange)="event.color.secondaryText = $event"
-            (change)="refresh.next()"
-          />
+          <input type="color" *ngIf="event.color" [(ngModel)]="event.color.secondary" (change)="refresh.next()" />
+          <input type="color" *ngIf="event.color" [ngModel]="event.color.secondaryText ?? '#1e90ff'"
+            (ngModelChange)="event.color.secondaryText = $event" (change)="refresh.next()" />
         </td>
         <td>
-          <input
-            class="form-control"
-            type="text"
-            mwlFlatpickr
-            [(ngModel)]="event.start"
-            (ngModelChange)="refresh.next()"
-            [altInput]="true"
-            [convertModelValue]="true"
-            [enableTime]="true"
-            dateFormat="Y-m-dTH:i"
-            altFormat="F j, Y H:i"
-            placeholder="Not set"
-          />
+          <input class="form-control" type="text" mwlFlatpickr [(ngModel)]="event.start"
+            (ngModelChange)="refresh.next()" [altInput]="true" [convertModelValue]="true" [enableTime]="true"
+            dateFormat="Y-m-dTH:i" altFormat="F j, Y H:i" placeholder="Not set" />
         </td>
         <td>
-          <input
-            class="form-control"
-            type="text"
-            mwlFlatpickr
-            [(ngModel)]="event.end"
-            (ngModelChange)="refresh.next()"
-            [altInput]="true"
-            [convertModelValue]="true"
-            [enableTime]="true"
-            dateFormat="Y-m-dTH:i"
-            altFormat="F j, Y H:i"
-            placeholder="Not set"
-          />
+          <input class="form-control" type="text" mwlFlatpickr [(ngModel)]="event.end" (ngModelChange)="refresh.next()"
+            [altInput]="true" [convertModelValue]="true" [enableTime]="true" dateFormat="Y-m-dTH:i"
+            altFormat="F j, Y H:i" placeholder="Not set" />
         </td>
         <td>
           <button class="btn btn-danger" (click)="deleteEvent(event)">
@@ -155,20 +89,33 @@
 
 <ng-template #modalContent let-close="close">
   <div class="modal-header">
-    <h5 class="modal-title">Event action occurred</h5>
-    <button type="button" class="close" (click)="close()">
-      <span aria-hidden="true">&times;</span>
-    </button>
+    <h5 class="modal-title">Rezerwuj</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="close()"></button>
   </div>
   <div class="modal-body">
-    <div>
-      Action:
-      <pre>{{ modalData.action }}</pre>
-    </div>
-    <div>
-      Event:
-      <pre>{{ modalData.event | json }}</pre>
-    </div>
+    <form>
+      <div class="form-group mb-2">
+        <label for="eventName">Nazwa rezerwacji</label>
+        <input type="text" class="form-control" id="eventName" placeholder="Moje pranie">
+      </div>
+      <div class="form-group mb-2 input-with-post-icon datepicker" inline="true">
+        <input placeholder="Wybierz datę" type="text" id="datePicker" class="form-control">
+        <label for="datePicker">Data</label>
+        <i class="fas fa-calendar input-prefix"></i>
+      </div>
+      <div class="form-group mb-2">
+        <label for="startEventTime">Godzina rozpoczęcia</label>
+        <div id="startEventTime">
+          <app-timepicker></app-timepicker>
+        </div>
+      </div>
+      <div class="form-group mb-2">
+        <label for="endEventTime">Godzina zakończenia</label>
+        <div id="endEventTime">
+          <app-timepicker></app-timepicker>
+        </div>
+      </div>
+    </form>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-secondary" (click)="close()">
