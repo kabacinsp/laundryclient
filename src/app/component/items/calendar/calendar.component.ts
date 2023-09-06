@@ -25,6 +25,7 @@ import {
   } from 'angular-calendar';
   import { EventColor } from 'calendar-utils';
 import { createNewCalendarEvent } from 'src/app/shared/calendar.utils';
+import { DatepickerComponent } from 'src/app/shared/datepicker/datepicker.component';
 
   const colors: Record<string, EventColor> = {
     red: {
@@ -62,6 +63,9 @@ import { createNewCalendarEvent } from 'src/app/shared/calendar.utils';
 export class CalendarComponent {
     @ViewChild('modalContent', { static: true })
     modalContent!: TemplateRef<any>;
+
+    @ViewChild('datePicker', { static: true })
+  datePicker!: { date: Date; };
 
     @Input() eventLength = 2;
 
@@ -174,6 +178,7 @@ export class CalendarComponent {
     }
 
     hourSegmentClicked(event: { date: Date }): void {
+      this.datePicker.date = event.date;
       const start: Date = event.date;
       const end: Date = addHours(event.date, this.eventLength);
 

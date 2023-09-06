@@ -96,23 +96,28 @@
     <form>
       <div class="form-group mb-2">
         <label for="eventName">Nazwa rezerwacji</label>
-        <input type="text" class="form-control" id="eventName" placeholder="Moje pranie">
+        <input type="text" class="form-control" id="eventName" placeholder="Moje pranie" ng-model="event.title">
       </div>
-      <div class="form-group mb-2 input-with-post-icon datepicker" inline="true">
-        <input placeholder="Wybierz datę" type="text" id="datePicker" class="form-control">
+      <div class="form-group mb-2">
         <label for="datePicker">Data</label>
-        <i class="fas fa-calendar input-prefix"></i>
+        <app-datepicker #datePicker id="datePicker" ng-model="event.start"></app-datepicker>
       </div>
-      <div class="form-group mb-2">
-        <label for="startEventTime">Godzina rozpoczęcia</label>
-        <div id="startEventTime">
-          <app-timepicker></app-timepicker>
+      <div class="row">
+        <div class="col-6 col-sm-3 offset-sm-2">
+          <div class="form-group mb-2">
+            <label for="startEventTime">Godzina rozpoczęcia</label>
+            <div id="startEventTime">
+              <app-timepicker ng-model="event.end"></app-timepicker>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="form-group mb-2">
-        <label for="endEventTime">Godzina zakończenia</label>
-        <div id="endEventTime">
-          <app-timepicker></app-timepicker>
+        <div class="col-6 col-sm-3 offset-sm-2">
+          <div class="form-group mb-2">
+            <label for="endEventTime">Godzina zakończenia</label>
+            <div id="endEventTime">
+              <app-timepicker></app-timepicker>
+            </div>
+          </div>
         </div>
       </div>
     </form>

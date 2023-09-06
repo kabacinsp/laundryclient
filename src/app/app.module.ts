@@ -18,6 +18,7 @@ import { TabsComponent } from './component/items/tabs/tabs.component';
 import { CalendarComponent } from './component/items/calendar/calendar.component';
 import { CommonModule } from '@angular/common';
 import { TimepickerComponent } from './shared/timepicker/timepicker.component';
+import { DatepickerComponent } from './shared/datepicker/datepicker.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { TimepickerComponent } from './shared/timepicker/timepicker.component';
       useFactory: adapterFactory,
     }),
     TimepickerComponent,
+    DatepickerComponent,
   ],
   exports: [CalendarComponent],
   providers: [httpInterceptorProviders],
